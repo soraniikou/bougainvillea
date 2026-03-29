@@ -111,6 +111,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   padding: 14px 28px;
   border-radius: 999px;
   background: rgba(243, 212, 220, 0.22);
@@ -282,10 +283,44 @@
   opacity: 0.65;
 }
 
-.app--morning .swipe-window__hint {
+/* --- Morning central bougainvillea (20s reveal) --- */
+.morning-bougainvillea-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.morning-bougainvillea-reveal__img {
+  width: min(88vw, 360px);
+  max-height: min(52vh, 360px);
+  object-fit: cover;
+  border-radius: 14px;
   opacity: 0;
-  height: 0;
-  overflow: hidden;
+  transform: scale(0.96);
+  filter: hue-rotate(52deg) saturate(1.45) contrast(1.04) brightness(0.94);
+  box-shadow: 0 24px 70px rgba(72, 40, 108, 0.18);
+  animation: morning-bougainvillea-emerge 20s ease-out forwards;
+}
+
+@keyframes morning-bougainvillea-emerge {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: hue-rotate(52deg) saturate(1.45) contrast(1.04) brightness(0.94) blur(6px);
+  }
+  35% {
+    opacity: 0.35;
+    filter: hue-rotate(52deg) saturate(1.45) contrast(1.04) brightness(0.94) blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: hue-rotate(52deg) saturate(1.45) contrast(1.04) brightness(0.94) blur(0);
+  }
 }
 
 /* --- Text dissolve --- */
@@ -412,33 +447,34 @@
   }
 }
 
-/* --- Bookmark --- */
-.vertical-bookmark {
+/* --- Comfort line (horizontal, near center) --- */
+.comfort-line {
   position: fixed;
-  right: max(12px, env(safe-area-inset-right));
-  bottom: 18%;
-  z-index: 20;
+  left: 50%;
+  top: 44%;
+  z-index: 22;
+  transform: translate(-50%, -50%) translateY(10px);
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 1.4s ease, transform 1.4s ease;
+  transition: opacity 1.6s ease 0.4s, transform 1.6s ease 0.4s;
   pointer-events: none;
+  max-width: min(92vw, 420px);
+  text-align: center;
+  padding: 0 16px;
 }
 
-.vertical-bookmark--on {
-  opacity: 0.85;
-  transform: translateY(0);
+.comfort-line--on {
+  opacity: 0.9;
+  transform: translate(-50%, -50%) translateY(0);
 }
 
-.vertical-bookmark__text {
+.comfort-line__text {
   display: block;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 0.35em;
-  font-size: 0.82rem;
+  font-size: clamp(0.95rem, 3.2vw, 1.15rem);
+  letter-spacing: 0.28em;
   color: var(--bougainvillea-deep);
-  border-right: 1px solid rgba(199, 107, 138, 0.25);
-  padding-right: 10px;
-  padding-top: 4px;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(199, 107, 138, 0.28);
+  padding-bottom: 10px;
 }
 
 .app--morning .voice-card__line {

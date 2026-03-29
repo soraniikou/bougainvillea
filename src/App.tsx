@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
+import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
 import { SwipeWindow } from "./components/SwipeWindow";
@@ -16,6 +17,7 @@ export default function App() {
   const [dissolveText, setDissolveText] = useState<string | null>(null);
   const [dissolveOrigin, setDissolveOrigin] = useState({ x: 0, y: 0 });
   const [openProgress, setOpenProgress] = useState(0);
+  const [morningRevealKey, setMorningRevealKey] = useState(0);
   const { play, playing, usedFallback } = useVoice();
 
   const bloom = useMemo(() => {
@@ -57,6 +59,7 @@ export default function App() {
 
   const onWindowOpened = useCallback(() => {
     setOpenProgress(1);
+    setMorningRevealKey((k) => k + 1);
     setPhase("morning");
   }, []);
 
@@ -65,7 +68,7 @@ export default function App() {
       <div className="app__bg app__bg--night" aria-hidden />
       <div className="app__bg app__bg--morning" style={{ opacity: morningMix }} aria-hidden />
 
-      <BougainvilleaVines bloom={bloom} className="app__vines" />
+      {phase !== "morning" && <BougainvilleaVines bloom={bloom} className="app__vines" />}
 
       <main className="app__main">
         {phase === "write" && (
@@ -100,7 +103,7 @@ export default function App() {
               onClick={() => play()}
               aria-pressed={playing}
             >
-              {playing ? "とめる" : "きく"}
+              {playing ? "stop" : "listen"}
             </button>
             {usedFallback && (
               <p className="voice-card__note">
@@ -108,18 +111,17 @@ export default function App() {
               </p>
             )}
             <button type="button" className="voice-card__next" onClick={goWindow}>
-              窓を開ける
+              open the window
             </button>
           </section>
         )}
 
-        {(phase === "window" || phase === "morning") && (
+        {phase === "window" && (
           <div className="window-stack">
             <SwipeWindow
-              openProgress={phase === "morning" ? 1 : openProgress}
+              openProgress={openProgress}
               onProgressChange={setOpenProgress}
               onOpened={onWindowOpened}
-              disabled={phase === "morning"}
             />
           </div>
         )}
@@ -134,6 +136,7 @@ export default function App() {
         />
       )}
 
+      {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
       <VerticalBookmark visible={phase === "morning"} />

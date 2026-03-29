@@ -43,16 +43,16 @@ export function TextDissolve({ text, originX, originY, onComplete }: Props) {
         y: originY,
         dx: Math.cos(angle) * speed,
         dy: Math.sin(angle) * speed - 0.35,
-        delay: i * 22 + Math.random() * 40,
-        life: 1400 + Math.random() * 500,
+        delay: (i * 22 + Math.random() * 40) * 3,
+        life: (1400 + Math.random() * 500) * 3,
       };
     });
     setParticles(list);
-    const maxLife = Math.max(...list.map((p) => p.delay + p.life), 1600);
+    const maxLife = Math.max(...list.map((p) => p.delay + p.life), 1600 * 3);
     const t = window.setTimeout(() => {
       setDone(true);
       onComplete();
-    }, maxLife + 120);
+    }, maxLife + 360);
     return () => window.clearTimeout(t);
   }, [chars, originX, originY, onComplete]);
 
