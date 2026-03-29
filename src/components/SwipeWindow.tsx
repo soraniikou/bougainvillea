@@ -12,7 +12,15 @@ type Props = {
 export function SwipeWindow({ openProgress, onProgressChange, onOpened, disabled }: Props) {
   const startX = useRef<number | null>(null);
   const lastProgress = useRef(0);
+  const openedEmitted = useRef(false);
   const [dragging, setDragging] = useState(false);
+
+  const emitOpened = useCallback(() => {
+    if (openedEmitted.current) return;
+    openedEmitted.current = true;
+    onProgressChange(1);
+    onOpened();
+  }, [onOpened, onProgressChange]);
 
   const applyClientX = useCallback(
     (clientX: number) => {
@@ -21,13 +29,14 @@ export function SwipeWindow({ openProgress, onProgressChange, onOpened, disabled
       const p = Math.min(1, delta / MAX_SHIFT);
       lastProgress.current = p;
       onProgressChange(p);
-      if (p >= 0.94) onOpened();
+      if (p >= 0.94) emitOpened();
     },
-    [disabled, onOpened, onProgressChange]
+    [disabled, emitOpened, onProgressChange]
   );
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (disabled) return;
+    openedEmitted.current = false;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     setDragging(true);
     startX.current = e.clientX;
@@ -44,9 +53,14 @@ export function SwipeWindow({ openProgress, onProgressChange, onOpened, disabled
     } catch {
       /* ignore */
     }
+    const lp = lastProgress.current;
     setDragging(false);
     startX.current = null;
-    if (lastProgress.current < 0.85) onProgressChange(0);
+    if (lp >= 0.94) {
+      emitOpened();
+    } else if (lp < 0.85) {
+      onProgressChange(0);
+    }
     lastProgress.current = 0;
   };
 

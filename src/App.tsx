@@ -20,6 +20,7 @@ export default function App() {
   const [dissolveText, setDissolveText] = useState<string | null>(null);
   const [dissolveOrigin, setDissolveOrigin] = useState({ x: 0, y: 0 });
   const [openProgress, setOpenProgress] = useState(0);
+  const [showSunrise, setShowSunrise] = useState(false);
   const [morningRevealKey, setMorningRevealKey] = useState(0);
   const { play, playing, usedFallback } = useVoice();
 
@@ -36,15 +37,16 @@ export default function App() {
   }, [phase, openProgress]);
 
   const completeSunriseToMorning = useCallback(() => {
+    setShowSunrise(false);
     setMorningRevealKey((k) => k + 1);
     setPhase("morning");
   }, []);
 
   useEffect(() => {
-    if (phase !== "sunrise") return;
+    if (!showSunrise) return;
     const t = window.setTimeout(completeSunriseToMorning, SUNRISE_MS);
     return () => window.clearTimeout(t);
-  }, [phase, completeSunriseToMorning]);
+  }, [showSunrise, completeSunriseToMorning]);
 
   const submitWorry = useCallback(
     (e: React.FormEvent) => {
@@ -74,6 +76,7 @@ export default function App() {
   const onWindowOpened = useCallback(() => {
     setOpenProgress(1);
     setPhase("sunrise");
+    setShowSunrise(true);
   }, []);
 
   return (
@@ -149,7 +152,7 @@ export default function App() {
         />
       )}
 
-      {phase === "sunrise" && <SunriseSequence onSkip={completeSunriseToMorning} />}
+      {showSunrise && <SunriseSequence onSkip={completeSunriseToMorning} />}
       {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
