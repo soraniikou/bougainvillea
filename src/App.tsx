@@ -1,6 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
-import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
+
+const MorningBougainvilleaReveal = lazy(async () => {
+  const m = await import("./components/MorningBougainvilleaReveal");
+  return { default: m.MorningBougainvilleaReveal };
+});
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
 import { SunriseSequence } from "./components/SunriseSequence";
@@ -184,7 +188,11 @@ export default function App() {
           <SunriseSequence onSkip={completeSunriseToMorning} />
         </div>
       )}
-      {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
+      {phase === "morning" && (
+        <Suspense fallback={null}>
+          <MorningBougainvilleaReveal key={morningRevealKey} />
+        </Suspense>
+      )}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
       <VerticalBookmark visible={phase === "morning"} />
