@@ -1,15 +1,15 @@
-/** 朝：中央に紫寄りのブーゲンビリア写真を約20秒かけて淡く浮かび上がらせる（親に key を付けて再入場時にアニメをやり直す） */
+/** 朝：ブーゲンビリア写真を全画面背景に、白オーバーレイ＋3秒フェードで表示 */
 export function MorningBougainvilleaReveal() {
   return (
-    <div className="morning-bougainvillea-reveal" aria-hidden>
+    <div className="morning-bougainvillea-reveal">
       <img
         src="/bu.png"
         alt=""
         className="morning-bougainvillea-reveal__img"
-        width={680}
-        height={680}
         decoding="async"
       />
+      <div className="morning-bougainvillea-reveal__overlay" aria-hidden />
+      <p className="morning-bougainvillea-reveal__caption">不安は生きている証拠</p>
     </div>
   );
 }
