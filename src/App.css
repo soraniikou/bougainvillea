@@ -215,6 +215,15 @@
 }
 
 /* --- Window --- */
+.window-phase-exit-wrap {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.window-phase-exit-wrap--out {
+  opacity: 0;
+}
+
 .window-stack {
   margin-top: 8vh;
 }
@@ -284,6 +293,24 @@
 }
 
 /* --- Sunrise sequence (45s after window opens) --- */
+.sunrise-sequence-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  pointer-events: none;
+  opacity: 0;
+  animation: sunrise-sequence-fade-in 0.5s ease forwards;
+}
+
+@keyframes sunrise-sequence-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .sunrise-sequence {
   position: fixed;
   inset: 0;

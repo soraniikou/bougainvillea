@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
 import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
 import { MorningParticles } from "./components/MorningParticles";
@@ -13,6 +13,7 @@ import "./App.css";
 type Phase = "write" | "dissolve" | "voice" | "window" | "sunrise" | "morning";
 
 const SUNRISE_MS = 45_000;
+const WINDOW_EXIT_MS = 300;
 
 export default function App() {
   const [phase, setPhase] = useState<Phase>("write");
@@ -21,7 +22,9 @@ export default function App() {
   const [dissolveOrigin, setDissolveOrigin] = useState({ x: 0, y: 0 });
   const [openProgress, setOpenProgress] = useState(0);
   const [showSunrise, setShowSunrise] = useState(false);
+  const [windowClosing, setWindowClosing] = useState(false);
   const [morningRevealKey, setMorningRevealKey] = useState(0);
+  const windowExitTimerRef = useRef<number | null>(null);
   const { play, playing, usedFallback } = useVoice();
 
   const bloom = useMemo(() => {
@@ -48,6 +51,14 @@ export default function App() {
     return () => window.clearTimeout(t);
   }, [showSunrise, completeSunriseToMorning]);
 
+  useEffect(() => {
+    return () => {
+      if (windowExitTimerRef.current != null) {
+        window.clearTimeout(windowExitTimerRef.current);
+      }
+    };
+  }, []);
+
   const submitWorry = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -69,14 +80,27 @@ export default function App() {
   }, []);
 
   const goWindow = useCallback(() => {
+    if (windowExitTimerRef.current != null) {
+      window.clearTimeout(windowExitTimerRef.current);
+      windowExitTimerRef.current = null;
+    }
     setOpenProgress(0);
+    setWindowClosing(false);
     setPhase("window");
   }, []);
 
   const onWindowOpened = useCallback(() => {
     setOpenProgress(1);
-    setPhase("sunrise");
-    setShowSunrise(true);
+    setWindowClosing(true);
+    if (windowExitTimerRef.current != null) {
+      window.clearTimeout(windowExitTimerRef.current);
+    }
+    windowExitTimerRef.current = window.setTimeout(() => {
+      windowExitTimerRef.current = null;
+      setPhase("sunrise");
+      setShowSunrise(true);
+      setWindowClosing(false);
+    }, WINDOW_EXIT_MS);
   }, []);
 
   return (
@@ -133,12 +157,15 @@ export default function App() {
         )}
 
         {phase === "window" && (
-          <div className="window-stack">
-            <SwipeWindow
-              openProgress={openProgress}
-              onProgressChange={setOpenProgress}
-              onOpened={onWindowOpened}
-            />
+          <div className={`window-phase-exit-wrap ${windowClosing ? "window-phase-exit-wrap--out" : ""}`}>
+            <div className="window-stack">
+              <SwipeWindow
+                openProgress={openProgress}
+                onProgressChange={setOpenProgress}
+                onOpened={onWindowOpened}
+                disabled={windowClosing}
+              />
+            </div>
           </div>
         )}
       </main>
@@ -152,7 +179,11 @@ export default function App() {
         />
       )}
 
-      {showSunrise && <SunriseSequence onSkip={completeSunriseToMorning} />}
+      {showSunrise && (
+        <div className="sunrise-sequence-fade">
+          <SunriseSequence onSkip={completeSunriseToMorning} />
+        </div>
+      )}
       {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
