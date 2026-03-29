@@ -1,15 +1,18 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
 import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
+import { SunriseSequence } from "./components/SunriseSequence";
 import { SwipeWindow } from "./components/SwipeWindow";
 import { TextDissolve } from "./components/TextDissolve";
 import { VerticalBookmark } from "./components/VerticalBookmark";
 import { useVoice } from "./hooks/useVoice";
 import "./App.css";
 
-type Phase = "write" | "dissolve" | "voice" | "window" | "morning";
+type Phase = "write" | "dissolve" | "voice" | "window" | "sunrise" | "morning";
+
+const SUNRISE_MS = 45_000;
 
 export default function App() {
   const [phase, setPhase] = useState<Phase>("write");
@@ -31,6 +34,17 @@ export default function App() {
     if (phase === "window") return Math.min(1, openProgress * 1.05);
     return 0;
   }, [phase, openProgress]);
+
+  const completeSunriseToMorning = useCallback(() => {
+    setMorningRevealKey((k) => k + 1);
+    setPhase("morning");
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "sunrise") return;
+    const t = window.setTimeout(completeSunriseToMorning, SUNRISE_MS);
+    return () => window.clearTimeout(t);
+  }, [phase, completeSunriseToMorning]);
 
   const submitWorry = useCallback(
     (e: React.FormEvent) => {
@@ -59,8 +73,7 @@ export default function App() {
 
   const onWindowOpened = useCallback(() => {
     setOpenProgress(1);
-    setMorningRevealKey((k) => k + 1);
-    setPhase("morning");
+    setPhase("sunrise");
   }, []);
 
   return (
@@ -68,7 +81,7 @@ export default function App() {
       <div className="app__bg app__bg--night" aria-hidden />
       <div className="app__bg app__bg--morning" style={{ opacity: morningMix }} aria-hidden />
 
-      {phase !== "morning" && <BougainvilleaVines bloom={bloom} className="app__vines" />}
+      {phase !== "morning" && phase !== "sunrise" && <BougainvilleaVines bloom={bloom} className="app__vines" />}
 
       <main className="app__main">
         {phase === "write" && (
@@ -136,6 +149,7 @@ export default function App() {
         />
       )}
 
+      {phase === "sunrise" && <SunriseSequence onSkip={completeSunriseToMorning} />}
       {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />

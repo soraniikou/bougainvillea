@@ -283,6 +283,172 @@
   opacity: 0.65;
 }
 
+/* --- Sunrise sequence (45s after window opens) --- */
+.sunrise-sequence {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  pointer-events: none;
+}
+
+.sunrise-sequence__layer {
+  position: absolute;
+  inset: 0;
+}
+
+.sunrise-sequence__layer--night {
+  background: linear-gradient(180deg, #0a0a1a 0%, #0d1b3e 100%);
+  animation: sunrise-layer-night 45s linear forwards;
+}
+
+.sunrise-sequence__layer--dawn {
+  background: linear-gradient(180deg, #0d1b3e 0%, #2d1b4e 38%, #8b4a6b 72%, #f4a261 100%);
+  animation: sunrise-layer-dawn 45s linear forwards;
+}
+
+.sunrise-sequence__layer--day {
+  background: linear-gradient(180deg, #f4a261 0%, #fde8d8 55%, #fff5ef 100%);
+  animation: sunrise-layer-day 45s linear forwards;
+}
+
+@keyframes sunrise-layer-night {
+  0%,
+  33.333% {
+    opacity: 1;
+  }
+  36%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sunrise-layer-dawn {
+  0%,
+  31% {
+    opacity: 0;
+  }
+  34%,
+  66.666% {
+    opacity: 1;
+  }
+  69%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sunrise-layer-day {
+  0%,
+  65% {
+    opacity: 0;
+  }
+  68%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.sunrise-sequence__stars {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  animation: sunrise-stars-visibility 45s linear forwards;
+}
+
+@keyframes sunrise-stars-visibility {
+  0%,
+  32% {
+    opacity: 1;
+  }
+  35%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.sunrise-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 7px rgba(255, 255, 255, 0.95);
+  animation: sunrise-star-twinkle 2.4s ease-in-out infinite;
+  animation-delay: var(--tw-delay, 0s);
+}
+
+@keyframes sunrise-star-twinkle {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.sunrise-sequence__petals {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.sunrise-petal {
+  position: absolute;
+  top: -10%;
+  width: 11px;
+  height: 15px;
+  border-radius: 55% 40% 60% 45%;
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.95), rgba(232, 120, 154, 0.88));
+  box-shadow: 0 0 10px rgba(255, 210, 190, 0.4);
+  opacity: 0;
+  animation-name: sunrise-petal-drift;
+  animation-duration: var(--petal-dur, 14s);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-delay: calc(30s + var(--petal-stagger, 0s));
+}
+
+@keyframes sunrise-petal-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  4% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(var(--petal-drift, 0px), 118vh) rotate(540deg);
+    opacity: 0.3;
+  }
+}
+
+.sunrise-skip {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 35;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.sunrise-skip:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+}
+
 /* --- Morning full-bleed bougainvillea + white veil + caption --- */
 .morning-bougainvillea-reveal {
   position: fixed;
