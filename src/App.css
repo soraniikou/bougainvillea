@@ -60,7 +60,8 @@
 
 /* --- Night write --- */
 .night-write {
-  width: min(100%, 400px);
+  width: min(480px, 90vw);
+  max-width: 90vw;
   text-align: center;
 }
 
@@ -91,16 +92,24 @@
 }
 
 .night-write__area {
-  width: 100%;
+  box-sizing: border-box;
+  width: min(480px, 90vw);
+  max-width: 90vw;
   resize: none;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(8, 12, 24, 0.25);
   color: var(--mist);
   padding: 16px 18px;
-  font-size: 1.5rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   line-height: 1.65;
   margin-bottom: 18px;
+}
+
+@media (max-width: 480px) {
+  .night-write__area {
+    padding: 10px 12px;
+  }
 }
 
 .night-write__area::placeholder {
