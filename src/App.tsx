@@ -16,6 +16,7 @@ const MorningBougainvilleaReveal = lazy(async () => {
 
 type Phase = "write" | "dissolve" | "voice" | "window" | "voice-select" | "sunrise" | "morning";
 
+/** Must match CSS sunrise keyframe duration (45s) */
 const SUNRISE_MS = 45_000;
 const WINDOW_EXIT_MS = 300;
 

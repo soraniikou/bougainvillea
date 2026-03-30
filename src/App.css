@@ -370,7 +370,7 @@
   opacity: 0.65;
 }
 
-/* --- Sunrise sequence (45s after window opens) --- */
+/* --- Sunrise sequence: 45s total (0–15s night, 15–30s dawn, 30–45s morning + petals) --- */
 .sunrise-sequence-fade {
   position: fixed;
   inset: 0;
@@ -412,7 +412,7 @@
 }
 
 .sunrise-sequence__layer--day {
-  background: linear-gradient(180deg, #f4a261 0%, #fde8d8 55%, #fff5ef 100%);
+  background: linear-gradient(180deg, #f4a261 0%, #fde8d8 100%);
   animation: sunrise-layer-day 45s linear forwards;
 }
 
@@ -511,7 +511,7 @@
   opacity: 0;
   animation-name: sunrise-petal-drift;
   animation-duration: var(--petal-dur, 14s);
-  animation-timing-function: linear;
+  animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
   animation-delay: calc(30s + var(--petal-stagger, 0s));
