@@ -1,5 +1,6 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
+import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
 import { SunriseSequence } from "./components/SunriseSequence";
@@ -8,11 +9,6 @@ import { TextDissolve } from "./components/TextDissolve";
 import { VerticalBookmark } from "./components/VerticalBookmark";
 import { useVoice } from "./hooks/useVoice";
 import "./App.css";
-
-const MorningBougainvilleaReveal = lazy(async () => {
-  const m = await import("./components/MorningBougainvilleaReveal");
-  return { default: m.MorningBougainvilleaReveal };
-});
 
 type Phase = "write" | "dissolve" | "voice" | "window" | "voice-select" | "sunrise" | "morning";
 
@@ -214,11 +210,7 @@ export default function App() {
           <SunriseSequence onSkip={completeSunriseToMorning} withVoice={sunriseWithVoice} />
         </div>
       )}
-      {phase === "morning" && (
-        <Suspense fallback={null}>
-          <MorningBougainvilleaReveal key={morningRevealKey} />
-        </Suspense>
-      )}
+      {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
       <VerticalBookmark visible={phase === "morning"} />
