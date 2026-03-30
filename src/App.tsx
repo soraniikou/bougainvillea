@@ -5,7 +5,6 @@ import { PetalRain } from "./components/PetalRain";
 import { SunriseSequence } from "./components/SunriseSequence";
 import { SwipeWindow } from "./components/SwipeWindow";
 import { TextDissolve } from "./components/TextDissolve";
-import { VerticalBookmark } from "./components/VerticalBookmark";
 import { useVoice } from "./hooks/useVoice";
 import "./App.css";
 
@@ -201,7 +200,6 @@ export default function App() {
       {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
-      <VerticalBookmark visible={phase === "morning"} />
     </div>
   );
 }

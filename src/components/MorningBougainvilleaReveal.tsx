@@ -1,4 +1,4 @@
-/** 朝：ブーゲンビリア写真を全画面背景に、白オーバーレイ＋3秒フェードで表示 */
+/** 朝：/bu.png 全画面＋白オーバーレイ、中央に2行のメッセージ */
 export function MorningBougainvilleaReveal() {
   return (
     <div className="morning-bougainvillea-reveal">
@@ -9,7 +9,10 @@ export function MorningBougainvilleaReveal() {
         decoding="async"
       />
       <div className="morning-bougainvillea-reveal__overlay" aria-hidden />
-      <p className="morning-bougainvillea-reveal__caption">不安は生きている証拠</p>
+      <div className="morning-bougainvillea-reveal__captions">
+        <p className="morning-bougainvillea-reveal__line1">だいじょうぶだよ</p>
+        <p className="morning-bougainvillea-reveal__line2">不安があるのは、生きている証拠</p>
+      </div>
     </div>
   );
 }

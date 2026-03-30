@@ -555,14 +555,12 @@
   background: rgba(0, 0, 0, 0.28);
 }
 
-/* --- Morning full-bleed bougainvillea + white veil + caption --- */
+/* --- Morning full-bleed bougainvillea + white veil + captions --- */
 .morning-bougainvillea-reveal {
   position: fixed;
   inset: 0;
   z-index: 16;
   pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
 }
 
 .morning-bougainvillea-reveal__img {
@@ -583,27 +581,47 @@
 .morning-bougainvillea-reveal__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.55);
   z-index: 1;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  animation: morning-bougainvillea-fadein 3s ease-out forwards;
 }
 
-.morning-bougainvillea-reveal__caption {
+.morning-bougainvillea-reveal__captions {
   position: absolute;
   left: 50%;
   top: 50%;
   z-index: 2;
   transform: translate(-50%, -50%);
-  margin: 0;
-  max-width: min(90vw, 28em);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1em;
+  max-width: min(92vw, 26em);
   text-align: center;
-  font-size: clamp(0.95rem, 2.8vw, 1.2rem);
-  font-weight: 300;
-  letter-spacing: 0.45em;
-  line-height: 1.85;
-  color: #ffffff;
-  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.8);
+  padding: 0 16px;
   opacity: 0;
   animation: morning-bougainvillea-fadein 3s ease-out forwards;
+}
+
+.morning-bougainvillea-reveal__line1,
+.morning-bougainvillea-reveal__line2 {
+  margin: 0;
+  font-weight: 300;
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.8);
+}
+
+.morning-bougainvillea-reveal__line1 {
+  font-size: clamp(0.98rem, 2.9vw, 1.22rem);
+  letter-spacing: 0.38em;
+  line-height: 1.75;
+}
+
+.morning-bougainvillea-reveal__line2 {
+  font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+  letter-spacing: 0.52em;
+  line-height: 1.85;
 }
 
 @keyframes morning-bougainvillea-fadein {
@@ -737,36 +755,6 @@
     transform: translateY(110vh) rotate(720deg);
     opacity: 0.15;
   }
-}
-
-/* --- Comfort line (horizontal, near center) --- */
-.comfort-line {
-  position: fixed;
-  left: 50%;
-  top: 44%;
-  z-index: 22;
-  transform: translate(-50%, -50%) translateY(10px);
-  opacity: 0;
-  transition: opacity 1.6s ease 0.4s, transform 1.6s ease 0.4s;
-  pointer-events: none;
-  max-width: min(92vw, 420px);
-  text-align: center;
-  padding: 0 16px;
-}
-
-.comfort-line--on {
-  opacity: 0.9;
-  transform: translate(-50%, -50%) translateY(0);
-}
-
-.comfort-line__text {
-  display: block;
-  font-size: clamp(0.95rem, 3.2vw, 1.15rem);
-  letter-spacing: 0.28em;
-  color: var(--bougainvillea-deep);
-  line-height: 1.6;
-  border-bottom: 1px solid rgba(199, 107, 138, 0.28);
-  padding-bottom: 10px;
 }
 
 .app--morning .voice-card__line {
