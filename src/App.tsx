@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BougainvilleaVines } from "./components/BougainvilleaVines";
 import { MorningBougainvilleaReveal } from "./components/MorningBougainvilleaReveal";
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
@@ -28,12 +27,6 @@ export default function App() {
   const [morningRevealKey, setMorningRevealKey] = useState(0);
   const windowExitTimerRef = useRef<number | null>(null);
   const { play, playing, usedFallback } = useVoice();
-
-  const bloom = useMemo(() => {
-    if (phase === "morning") return 1;
-    if (phase === "window") return openProgress;
-    return 0;
-  }, [phase, openProgress]);
 
   const morningMix = useMemo(() => {
     if (phase === "morning") return 1;
@@ -115,10 +108,6 @@ export default function App() {
     <div className={`app ${phase === "morning" ? "app--morning" : ""}`}>
       <div className="app__bg app__bg--night" aria-hidden />
       <div className="app__bg app__bg--morning" style={{ opacity: morningMix }} aria-hidden />
-
-      {phase !== "morning" && phase !== "sunrise" && phase !== "voice-select" && (
-        <BougainvilleaVines bloom={bloom} className="app__vines" />
-      )}
 
       <main className="app__main">
         {phase === "write" && (
