@@ -300,6 +300,7 @@
 
 .window-phase-exit-wrap--out {
   opacity: 0;
+  pointer-events: none;
 }
 
 .window-stack {
@@ -560,6 +561,8 @@
   inset: 0;
   z-index: 16;
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .morning-bougainvillea-reveal__img {
