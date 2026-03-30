@@ -10,12 +10,16 @@ const STARS = [
 
 const PETALS = 14;
 
-type Props = { onSkip: () => void };
+type Props = { onSkip: () => void; withVoice?: boolean };
 
-export function SunriseSequence({ onSkip }: Props) {
+export function SunriseSequence({ onSkip, withVoice = false }: Props) {
   return (
     <>
-      <div className="sunrise-sequence" aria-hidden>
+      <div
+        className={`sunrise-sequence ${withVoice ? "sunrise-sequence--with-voice" : ""}`}
+        aria-hidden
+        data-with-voice={withVoice ? "true" : "false"}
+      >
         <div className="sunrise-sequence__layer sunrise-sequence__layer--night" />
         <div className="sunrise-sequence__layer sunrise-sequence__layer--dawn" />
         <div className="sunrise-sequence__layer sunrise-sequence__layer--day" />

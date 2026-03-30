@@ -1,10 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BougainvilleaVines } from "./components/BougainvilleaVines";
-
-const MorningBougainvilleaReveal = lazy(async () => {
-  const m = await import("./components/MorningBougainvilleaReveal");
-  return { default: m.MorningBougainvilleaReveal };
-});
 import { MorningParticles } from "./components/MorningParticles";
 import { PetalRain } from "./components/PetalRain";
 import { SunriseSequence } from "./components/SunriseSequence";
@@ -14,7 +9,12 @@ import { VerticalBookmark } from "./components/VerticalBookmark";
 import { useVoice } from "./hooks/useVoice";
 import "./App.css";
 
-type Phase = "write" | "dissolve" | "voice" | "window" | "sunrise" | "morning";
+const MorningBougainvilleaReveal = lazy(async () => {
+  const m = await import("./components/MorningBougainvilleaReveal");
+  return { default: m.MorningBougainvilleaReveal };
+});
+
+type Phase = "write" | "dissolve" | "voice" | "window" | "voice-select" | "sunrise" | "morning";
 
 const SUNRISE_MS = 45_000;
 const WINDOW_EXIT_MS = 300;
@@ -26,6 +26,7 @@ export default function App() {
   const [dissolveOrigin, setDissolveOrigin] = useState({ x: 0, y: 0 });
   const [openProgress, setOpenProgress] = useState(0);
   const [showSunrise, setShowSunrise] = useState(false);
+  const [sunriseWithVoice, setSunriseWithVoice] = useState(false);
   const [windowClosing, setWindowClosing] = useState(false);
   const [morningRevealKey, setMorningRevealKey] = useState(0);
   const windowExitTimerRef = useRef<number | null>(null);
@@ -90,6 +91,7 @@ export default function App() {
     }
     setOpenProgress(0);
     setWindowClosing(false);
+    setSunriseWithVoice(false);
     setPhase("window");
   }, []);
 
@@ -101,10 +103,15 @@ export default function App() {
     }
     windowExitTimerRef.current = window.setTimeout(() => {
       windowExitTimerRef.current = null;
-      setPhase("sunrise");
-      setShowSunrise(true);
+      setPhase("voice-select");
       setWindowClosing(false);
     }, WINDOW_EXIT_MS);
+  }, []);
+
+  const chooseVoiceSelect = useCallback((withVoice: boolean) => {
+    setSunriseWithVoice(withVoice);
+    setPhase("sunrise");
+    setShowSunrise(true);
   }, []);
 
   return (
@@ -112,7 +119,9 @@ export default function App() {
       <div className="app__bg app__bg--night" aria-hidden />
       <div className="app__bg app__bg--morning" style={{ opacity: morningMix }} aria-hidden />
 
-      {phase !== "morning" && phase !== "sunrise" && <BougainvilleaVines bloom={bloom} className="app__vines" />}
+      {phase !== "morning" && phase !== "sunrise" && phase !== "voice-select" && (
+        <BougainvilleaVines bloom={bloom} className="app__vines" />
+      )}
 
       <main className="app__main">
         {phase === "write" && (
@@ -174,6 +183,22 @@ export default function App() {
         )}
       </main>
 
+      {phase === "voice-select" && (
+        <div className="voice-select-screen" role="dialog" aria-labelledby="voice-select-heading">
+          <h2 id="voice-select-heading" className="voice-select-screen__heading visually-hidden">
+            過ごし方を選ぶ
+          </h2>
+          <div className="voice-select-screen__inner">
+            <button type="button" className="voice-select-screen__btn" onClick={() => chooseVoiceSelect(false)}>
+              🔇 静かに過ごす
+            </button>
+            <button type="button" className="voice-select-screen__btn" onClick={() => chooseVoiceSelect(true)}>
+              🔊 声と一緒に過ごす
+            </button>
+          </div>
+        </div>
+      )}
+
       {dissolveText && (
         <TextDissolve
           text={dissolveText}
@@ -185,7 +210,7 @@ export default function App() {
 
       {showSunrise && (
         <div className="sunrise-sequence-fade">
-          <SunriseSequence onSkip={completeSunriseToMorning} />
+          <SunriseSequence onSkip={completeSunriseToMorning} withVoice={sunriseWithVoice} />
         </div>
       )}
       {phase === "morning" && (

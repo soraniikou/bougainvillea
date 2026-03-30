@@ -58,6 +58,75 @@
   color: #2a2a32;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Voice select (after window, before sunrise) --- */
+.voice-select-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(20px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+  background: #0a0a1a;
+  opacity: 0;
+  animation: voice-select-fade-in 1s ease forwards;
+  pointer-events: auto;
+}
+
+@keyframes voice-select-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.voice-select-screen__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+  width: min(100%, 320px);
+}
+
+.voice-select-screen__btn {
+  font-family: inherit;
+  font-weight: 300;
+  font-size: clamp(0.88rem, 3.2vw, 1rem);
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  padding: 16px 22px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.voice-select-screen__btn:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+}
+
+.voice-select-screen__btn:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 3px;
+}
+
 /* --- Night write --- */
 .night-write {
   width: min(480px, 90vw);
