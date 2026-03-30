@@ -134,13 +134,13 @@ export default function App() {
               id="worry-field"
               className="night-write__area"
               rows={5}
-              placeholder="Let the dream easter eat my nightmare"
+              placeholder="不安なことを書いて"
               value={worry}
               onChange={(e) => setWorry(e.target.value)}
               maxLength={400}
             />
             <button type="submit" className="night-write__submit">
-              entrust
+              預ける
             </button>
           </form>
         )}
