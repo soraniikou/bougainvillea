@@ -226,7 +226,36 @@ export default function App() {
           <SunriseSequence onSkip={completeSunriseToMorning} withVoice={sunriseWithVoice} />
         </div>
       )}
-      {phase === "morning" && <MorningBougainvilleaReveal key={morningRevealKey} />}
+      {phase === "morning" && (
+  <>
+    <MorningBougainvilleaReveal key={morningRevealKey} />
+    <div className="morning-back-buttons">
+      <button
+        type="button"
+        className="morning-back-btn"
+        onClick={() => {
+          setPhase("voice-select");
+          setShowSunrise(false);
+          setSelectedEmotion(null);
+        }}
+      >
+        また選ぶ
+      </button>
+      <button
+        type="button"
+        className="morning-back-btn"
+        onClick={() => {
+          setPhase("write");
+          setWorry("");
+          setSelectedEmotion(null);
+          setShowSunrise(false);
+        }}
+      >
+        最初から
+      </button>
+    </div>
+  </>
+)}
       <MorningParticles visible={phase === "morning"} />
       <PetalRain active={phase === "morning"} />
     </div>
