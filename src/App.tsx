@@ -78,13 +78,7 @@ export default function App() {
     },
     [worry]
   );
-
-  const onDissolveComplete = useCallback(() => {
-  setDissolveText(null);
-  goWindow();
-}, [goWindow]);
-
-  const goWindow = useCallback(() => {
+　const goWindow = useCallback(() => {
     if (windowExitTimerRef.current != null) {
       window.clearTimeout(windowExitTimerRef.current);
       windowExitTimerRef.current = null;
@@ -94,6 +88,11 @@ export default function App() {
     setSunriseWithVoice(false);
     setPhase("window");
   }, []);
+
+  const onDissolveComplete = useCallback(() => {
+    setDissolveText(null);
+    goWindow();
+  }, [goWindow]);
 
   const onWindowOpened = useCallback(() => {
     setOpenProgress(1);
