@@ -80,9 +80,9 @@ export default function App() {
   );
 
   const onDissolveComplete = useCallback(() => {
-    setDissolveText(null);
-    setPhase("voice");
-  }, []);
+  setDissolveText(null);
+  goWindow();
+}, [goWindow]);
 
   const goWindow = useCallback(() => {
     if (windowExitTimerRef.current != null) {
