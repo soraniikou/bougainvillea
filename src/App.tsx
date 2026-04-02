@@ -10,9 +10,18 @@ import "./App.css";
 
 type Phase = "write" | "dissolve" | "voice" | "window" | "voice-select" | "sunrise" | "morning";
 
-/** Must match CSS sunrise keyframe duration (45s) */
 const SUNRISE_MS = 45_000;
 const WINDOW_EXIT_MS = 300;
+
+const EMOTION_BUTTONS = [
+  { file: "fuan",     label: "不安がある" },
+  { file: "iya",      label: "イヤな事あったら" },
+  { file: "kibun",    label: "気分を聴いて" },
+  { file: "mederu",   label: "愛でたい" },
+  { file: "nigate",   label: "苦手がある" },
+  { file: "wasurete", label: "忘れたい" },
+  { file: "dream",    label: "夢がある" },
+] as const;
 
 export default function App() {
   const [phase, setPhase] = useState<Phase>("write");
@@ -24,7 +33,9 @@ export default function App() {
   const [sunriseWithVoice, setSunriseWithVoice] = useState(false);
   const [windowClosing, setWindowClosing] = useState(false);
   const [morningRevealKey, setMorningRevealKey] = useState(0);
+  const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
   const windowExitTimerRef = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { play, playing, usedFallback } = useVoice();
 
   const morningMix = useMemo(() => {
@@ -97,10 +108,23 @@ export default function App() {
     }, WINDOW_EXIT_MS);
   }, []);
 
-  const chooseVoiceSelect = useCallback((withVoice: boolean) => {
-    setSunriseWithVoice(withVoice);
-    setPhase("sunrise");
-    setShowSunrise(true);
+  const chooseEmotion = useCallback((file: string) => {
+    setSelectedEmotion(file);
+    // 音声を再生
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const audio = new Audio(`/audio/${file}.wav`);
+    audioRef.current = audio;
+    audio.play().catch(() => {});
+    // 音声終了後 or 3秒後にsunriseへ
+    const go = () => {
+      setSunriseWithVoice(true);
+      setPhase("sunrise");
+      setShowSunrise(true);
+    };
+    audio.addEventListener("ended", go, { once: true });
+    window.setTimeout(go, 8_000); // 最大8秒待つ
   }, []);
 
   return (
@@ -169,16 +193,21 @@ export default function App() {
 
       {phase === "voice-select" && (
         <div className="voice-select-screen" role="dialog" aria-labelledby="voice-select-heading">
-          <h2 id="voice-select-heading" className="voice-select-screen__heading visually-hidden">
-            過ごし方を選ぶ
+          <h2 id="voice-select-heading" className="voice-select-screen__heading">
+            今の気持ちに近いものを
           </h2>
-          <div className="voice-select-screen__inner">
-            <button type="button" className="voice-select-screen__btn" onClick={() => chooseVoiceSelect(false)}>
-              🔇 静かに過ごす
-            </button>
-            <button type="button" className="voice-select-screen__btn" onClick={() => chooseVoiceSelect(true)}>
-              🔊 声と一緒に過ごす
-            </button>
+          <div className="voice-select-screen__grid">
+            {EMOTION_BUTTONS.map(({ file, label }) => (
+              <button
+                key={file}
+                type="button"
+                className={`voice-select-screen__btn ${selectedEmotion === file ? "voice-select-screen__btn--selected" : ""}`}
+                onClick={() => chooseEmotion(file)}
+                disabled={selectedEmotion !== null}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
       )}
