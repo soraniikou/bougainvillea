@@ -760,3 +760,23 @@
 .app--morning .voice-card__line {
   color: #4a4650;
 }
+.voice-select-screen__heading {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+}
+
+.voice-select-screen__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.voice-select-screen__btn--selected {
+  opacity: 0.5;
+  transform: scale(0.97);
+}
